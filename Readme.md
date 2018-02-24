@@ -65,7 +65,7 @@ Contributions are always welcome, hoping people will help me in growing this. To
   |Grow/Shrink selection from cursor                                                |<kbd>Opt</kbd>&nbsp;<kbd>Up/Down Arrow key</kbd>                 |<kbd>Shift</kbd>&nbsp;<kbd>Ctrl</kbd>&nbsp;<kbd>W</kbd>
   |[Multicursor Selection](https://android.jlelse.eu/ctrl-g-d94c88cd4475#.55flqgkb3)|<kbd>Ctrl</kbd>&nbsp;<kbd>G</kbd>                                |<kbd>Alt</kbd>&nbsp;<kbd>J</kbd>
 
-  **Complete Keymap Guide :  [MacOSX](https://resources.jetbrains.com/assets/products/intellij-idea/IntelliJIDEA_ReferenceCard_mac.pdf) | [Linux/Win](https://resources.jetbrains.com/assets/products/intellij-idea/IntelliJIDEA_ReferenceCard.pdf)**
+  **Complete Keymap Guide :  [Linux/Win | MacOSX](https://resources.jetbrains.com/storage/products/intellij-idea/docs/IntelliJIDEA_ReferenceCard.pdf)**
 
 + **Use plugins to become more efficient**
   1. [KeyPromoter](https://plugins.jetbrains.com/plugin/4455)
@@ -125,7 +125,7 @@ Contributions are always welcome, hoping people will help me in growing this. To
 
   Android Studio/IntelliJ havea special kind of code completion which allows you to write code specific to a field
   + `<expr>.null` will auto complete to `if(<expr> == null)`
-  + `<expr>.nootnull` will auto complete to `if(<expr> != null)`
+  + `<expr>.notnull` will auto complete to `if(<expr> != null)`
   + `<expr>.var` will auto complete to `T name = <expr>`
   + `<expr>.field` will auto complete to create a global field variable `field = <expr>`
   + `<ArrayExpr>.for` will auto complete to `for(T item : <Arrayexpr>)`
@@ -141,13 +141,15 @@ Contributions are always welcome, hoping people will help me in growing this. To
 
 + **Don't use a small font**
 
-  Preferably use a font in Android Studio that's easy to read and is at a font size which does not forces you to strain your eyes. I use [Menlo font](https://en.wikipedia.org/wiki/Menlo_(typeface)).
+  Preferably use a font in Android Studio that's easy to read and is at a font size which does not forces you to strain your eyes. My primary font is [FiraCode](https://github.com/tonsky/FiraCode) and secondary font is [Menlo font](https://en.wikipedia.org/wiki/Menlo_(typeface))
 
 + **Use a code style**
 
   You should use a standard codestyle, so possible contenders can be
   + [AOSP Codestyle](https://source.android.com/source/code-style.html)
   + [Square IntelliJ Codestyle](https://github.com/square/java-code-styles)
+  + [Grandcentrix Codestyle](https://github.com/grandcentrix/AndroidCodeStyle)
+
 + **Use the [Embedded Terminal inside Android Studio](https://www.jetbrains.com/help/idea/2016.2/working-with-embedded-local-terminal.html)**
 + **Use the Memory/Network/CPU Monitor inside Android Studio to profile your code/app**
 + **[Configure Android Studio](https://medium.com/google-developer-experts/configuring-android-studio-4aa4f54f1153#.rq0z6qlaq)**
@@ -258,6 +260,8 @@ Few handy commands you can use to interact with emulator/device, through termina
     }
   }
   ```
+  [[Read more from the manual here](https://www.guardsquare.com/en/proguard/manual/usage)]
+
 + **Use shrinkResources**
 
   ```gradle
@@ -785,9 +789,77 @@ Few handy commands you can use to interact with emulator/device, through termina
 
   > Hit `Ctrl+C` to exit/stop recording
   >
-  > Recorded video file is saved at the location mentioned in the command on the device itself. 
+  > Recorded video file is saved at the location mentioned in the command on the device itself.
+
++ Use Dao inheritance to reduce the amount of boilerplate code [[Ref Link](https://gist.github.com/florina-muntenescu/1c78858f286d196d545c038a71a3e864)]
+
++ Instead of using `getActivity()` in fragment, keep a habit of getting context from `onAttach()`. [[Ref Link](https://twitter.com/ravi_rupareliya/status/920881340245073920)]
+
++ Avoid setting a background in every view/fragment as it likely causes overdraw. [[Ref Link](https://twitter.com/molsjeroen/status/923543967978881025)]
+
++ `View.getWidth() = 0?` That's because your view hasn't been layout yet, use globallayoutListener to know layout done. [[Ref Link](https://twitter.com/molsjeroen/status/923542864877047808)]
+
++ Android never kills activities, it only kills processes. When low memory the lowest priority ranked will be killed.[[Ref Link](https://twitter.com/molsjeroen/status/923510846696951809)]
+
++ [Use `.([filename].java:[line])` in your log statements to make them clickable in Android Studio and Intellij IDEA.](https://medium.com/@tauno/android-studio-pro-tip-go-to-source-from-logcat-output-f13bf46411b5)
+
++ Use `-whyareyoukeeping class com.jeroenmols.MyClass` to figure out why certain a class wasn't removed.[[Ref Link](https://twitter.com/molsjeroen/status/905713748173881345)]
 
 + Use certificate pinning to resist impersonation by attackers using mis-issued or otherwise fraudulent certificates, when making requests from your app. [[Ref Link](https://dev.to/mplacona/certificate-pinning-in-android)]
+
++ Do download the latest emulator using CLI
+  ```
+  cd <android_sdk>/tools/bin
+  ./sdkmanager --channel=3 emulator
+  ```
+
+  To check the version of emulator, use `./sdkmanager --channel=3 emulator`
+
++ **[Checkout some tricks when using Android Strings in XML](https://android.jlelse.eu/android-strings-xml-tips-tricks-52b0c820cf7a)**
+
++ Cleanup your Gradle caches by deleting files not accessed within the last month [[Ref Link](https://github.com/gradle/gradle/issues/2304)]
+  ```
+  find ~/.gradle -type f -atime +30 -delete
+  find ~/.gradle -type d -mindepth 1 -empty -delete
+  ```
+  > To check the size of your gradle cache, run:  `du -sh ~/.gradle`
+
++ **[Checkout some cool tricks when using `tools:` attribute in your android layouts, such as sample data and recyclerview item layout previews](https://blog.stylingandroid.com/tool-time-part-1-2/)**
+
++ Remove all debug log statements from the release build using the below proguard rules. (app's build.gradle should have `minifyEnabled true` set for this to work)
+  ```
+  # Remove all debug logs
+  -assumenosideeffects class android.util.Log {
+      public static *** d(...);
+  }
+  ```
+  > The above snippet is usually appended to contents of app/proguard-rules.pro file
+
++ **[Should I use Enums in Android?](https://trevore.com/post/should-i-use-enums-in-android/)**
+
+  **tl;dr**
+  + If you need code to be very performant integer constants may be the way to go
+    ```java
+    public class Operator {
+        public static final int ADD = 1;
+        public static final int SUBTRACT = 2;
+        public static final int MULTIPLY = 3;
+        public static final int DIVIDE = 4;
+    }
+    ```
+  + Use Enums because
+    + Are type-safe, so you can only use valid enum types
+    + Provide better code readability
+    + Can implement interfaces
+    + Support polymorphic behavior
+    + In some really trivial cases, Proguard can optimize Enums into integer constants for you [[Ref Link](https://www.guardsquare.com/en/proguard/manual/optimizations)]
+    + Performance difference rarely makes a difference.
+
+    ```java
+    public enum Operators {
+        Add, Subtract, Multiply, Divide
+    }
+    ```
 
 [<p align="right">Back to Index</p>](#index)
 ### ***Tips regarding UI/UX***
@@ -847,10 +919,14 @@ Few handy commands you can use to interact with emulator/device, through termina
 
   Cheatsheet when you come from Java to Kotlin. Very nice resource to compare the two languages.
 
++ **Checkout [Kotlin Style Guide](https://android.github.io/kotlin-guides/index.html) by Google**
+
 [<p align="right">Back to Index</p>](#index)
 ### ***Other Resources***
 
 + [Adhere to the coding guidelines](https://github.com/ribot/android-guidelines/blob/master/project_and_code_guidelines.md)
+
++ [Google's Maven Repository](https://dl.google.com/dl/android/maven2/index.html)
 
 + **Listen to podcasts**
   1. [Fragmented](http://fragmentedpodcast.com/)
