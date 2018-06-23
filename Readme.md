@@ -22,7 +22,7 @@ Contributions are always welcome, hoping people will help me in growing this. To
 * [Know Your Tools](#know-your-tools)
     * [Android Studio](#android-studio)
     * [Emulator](#emulator)
-    * [Vysor](#vysor)
+    * [Vysor](#vysor) / [scrcpy](#scrcpy)
     * [DeskDock](#deskdock)
     * [ADB Shell](#adb-shell)
 * [Make better choices while coding](#make-better-choices-while-coding)
@@ -98,6 +98,11 @@ Contributions are always welcome, hoping people will help me in growing this. To
   1. [JVM Debugger Memory View](https://plugins.jetbrains.com/idea/plugin/8537-jvm-debugger-memory-view)
 
       This plugin extends the built-in JVM debugger with capabilities to explore objects in the JVM heap during a debug session.
+      
+  1. [Android Parcelable code generator](https://plugins.jetbrains.com/plugin/7332-android-parcelable-code-generator)
+  
+      Plugin which generates Android Parcelable boilerplate code for you.
+
 
 + **Use Live Templates in Android Studio**
   + `newInstance` - Generates the static `newInstance` function inside a Fragment
@@ -168,6 +173,9 @@ Apart from using physical devices, one should use emulators as they are as of no
 #### ***[Vysor](http://www.vysor.io/)***
 This one needs special mention due to how useful it is. It basically is a window to your device i.e it streams and allows you to interact with your physical device on your laptop. Very useful when you are demoing your app during a presentation. You can interact with your physical device and it will be shown right in your laptop screen. It has a paid/free version, paid version is totally worth buying.
 
+#### ***[scrcpy](https://github.com/genymobile/scrcpy)***
+It is basically used to display and control your Android device and is the open source equivalent of [Vysor](http://www.vysor.io/). The good folks at [Genymotion](https://www.genymotion.com/) built this tool and then open sourced it (Open Source FTW).
+
 [<p align="right">Back to Index</p>](#index)
 #### ***[DeskDock](https://play.google.com/store/apps/details?id=com.floriandraschbacher.deskdock.free)***
 Yes, vysor was great, but if you want to share your keyboard and mouse directly to your Android device, then this app is for you. It enables you to control your Android device as if it was part of your desktop computer. The [FREE version](https://play.google.com/store/apps/details?id=com.floriandraschbacher.deskdock.free) includes the use of computer mouse, while the [PRO version](https://play.google.com/store/apps/details?id=com.floriandraschbacher.deskdock.pro) includes features such as use of keyboard. This is useful where you can test your app without your hands ever leaving your keyboard.
@@ -193,13 +201,45 @@ Few handy commands you can use to interact with emulator/device, through termina
 |Reset a specific permission|`adb shell pm revoke your.app.package android.permission.WRITE_EXTERNAL_STORAGE`|
 |Broadcast Actions|`adb shell am broadcast -a 'my_action'` |
 |[Simulating Android killing your app in the background](https://twitter.com/Jahnold/status/759775495655333888)|`adb shell am kill`|
-|Take a Screenshot|`adb shell screencap -p \| perl -pe 's/\x0D\x0A/\x0A/g' > screenshot.png`|  
+|Take a Screenshot|`adb shell screencap -p \| perl -pe 's/\x0D\x0A/\x0A/g' > screenshot.png`|
+|Launch an installed app using its package name|`adb shell monkey -p com.yourapp.packagename 1`|
 
 + **[Learn about various techniques involved when using ADB](https://android.jlelse.eu/do-you-like-to-adb-fcae3655b9c8)**
 
 
 [<p align="right">Back to Index</p>](#index)
 ### ***Make better choices while coding***
+
++ **Setup handy `adb` aliases for your terminal** [[Ref Link]](https://medium.com/@jonfhancock/bash-your-way-to-better-android-development-1169bc3e0424#.8zcc4m5ch)
+
+  Append the below **Aliases** to your `~/.bashrc` or `~/.zshrc` file, save and restart the terminal. Once saved, use them as show in **Usage** column
+
+  ```bash
+  # Take a screenshot
+  # Usage: screenshot
+  alias screenshot="adb exec-out screencap -p > screen-$(date -j "+%s").png"
+
+  # Fire an intent
+  # Usage: startintent https://twitter.com/nisrulz
+  alias startintent="adb devices | tail -n +2 | cut -sf 1 | xargs -I X adb -s X shell am start $1"
+
+  # Install Apk
+  # Usage: apkinstall ~/path/to/apk/App.apk
+  alias apkinstall="adb devices | tail -n +2 | cut -sf 1 | xargs -I X adb -s X install -r $1"
+
+  # Uninstall an app
+  # Usage: rmapp com.example.demoapp
+  alias rmapp="adb devices | tail -n +2 | cut -sf 1 | xargs -I X adb -s X uninstall $1"
+
+  # Clear all data of an app
+  # Usage: clearapp com.example.demoapp
+  alias clearapp="adb devices | tail -n +2 | cut -sf 1 | xargs -I X adb -s X shell pm clear $1"
+
+  # Launch your debug apk on your connected device
+  # Execute at the root of your android project
+  # Usage: launchDebugApk
+  alias launchDebugApk="adb shell monkey -p `aapt dump badging ./app/build/outputs/apk/debug/app-debug.apk | grep -e 'package: name' | cut -d \' -f 2` 1"
+  ```
 
 + **Use OkHttp over HttpUrlConnect**
 
@@ -425,18 +465,6 @@ Few handy commands you can use to interact with emulator/device, through termina
   + Open SDK Manager and resync all support libs and google play services
   + Next re-sync your project
   + Everything should become consistent and functional.
-
-+ **Setup handy `adb` aliases for your terminal** [[Ref Link]](https://medium.com/@jonfhancock/bash-your-way-to-better-android-development-1169bc3e0424#.8zcc4m5ch)
-
-  Append the below **Aliases** to your `~/.bashrc` or `~/.zshrc` file, save and restart the terminal. Once saved, use them as show in **Usage** column
-
-  |Alias|Usage
-  |---|---
-  |`alias screenshot="adb exec-out screencap -p > screen-$(date -j "+%s").png"`|`screenshot`
-  |`alias startintent="adb devices | tail -n +2 | cut -sf 1 | xargs -I X adb -s X shell am start $1"`|`startintent https://twitter.com/nisrulz`
-  |`alias apkinstall="adb devices | tail -n +2 | cut -sf 1 | xargs -I X adb -s X install -r $1"`|`apkinstall ~/Desktop/DemoApp.apk`
-  |`alias rmapp="adb devices | tail -n +2 | cut -sf 1 | xargs -I X adb -s X uninstall $1"`|`rmapp com.example.demoapp`
-  |`alias clearapp="adb devices | tail -n +2 | cut -sf 1 | xargs -I X adb -s X shell pm clear $1"`|`clearapp com.example.demoapp`
 
 + **Setup Android Studio to fail build if code contains `//STOPSHIP`** [[Ref Link]](https://www.reddit.com/r/androiddev/comments/5c8b0a/i_know_android_studio_allows_you_to_make_custom/d9uhdzt/)
 
@@ -860,6 +888,10 @@ Few handy commands you can use to interact with emulator/device, through termina
         Add, Subtract, Multiply, Divide
     }
     ```
+
++ The string resource `android.R.string.yes` doesnot yield string "Yes" instead it yields "Ok". Similarly the string resource `android.R.string.no` doesnot yield string "No" instead it yields "Cancel" [[Ref Link](https://twitter.com/mandybess/status/971901727711535105)]
+
+  ![string resource](img/android_str_mismatch.jpg)
 
 [<p align="right">Back to Index</p>](#index)
 ### ***Tips regarding UI/UX***
