@@ -1,24 +1,10 @@
-<a href="https://nisrulz.com/android-tips-tricks" target="_blank" noopener>![Image](src/img/github_banner.png)</a>
+![Image](img/github_banner.png)
 
-Cheatsheet about tips and tricks for Android Development.
+Cheatsheet about tips and tricks for Android Development
 
 This is a simple set of tips and tricks regarding Android Development which I have gathered from various sources. It helps me direct other android devs in my community regarding stuff each android dev should know about. It is also there for me to keep track of anything I either learn on my own or from other sources now and then when browsing the internet.
 
 Contributions are always welcome, hoping people will help me in growing this. To contribute, simply open up a PR with the changes.
-
-<a href="https://nisrulz.com/android-tips-tricks" target="_blank" noopener>Click here to navigate to the searchable book version</a>
-
-
-### Development
-
-#### Build Book
-```mdbook build```
-
-#### Build book and serve locally
-```mdbook serve --open```
-
-#### Build book and publish to Github Pages
-```./deploy-to-github-pages.sh```
 
 ### Show some ♥️ and 🌟 the repo to support the project
 
@@ -39,6 +25,3 @@ This curated cheatsheet includes tips and tricks that I have been following in m
 If you appreciate my work, consider [buying me](https://www.paypal.me/nisrulz/5usd) a cup of ☕️ to keep me recharged 🤘🏼 [[PayPal](https://www.paypal.me/nisrulz/5usd)]
 
 [![Twitter Follow](https://img.shields.io/twitter/follow/nisrulz.svg?style=social)](https://twitter.com/nisrulz)
-
-
-[Apache Version 2.0 | Copyright 2016 Nishant Srivastava](LICENSE)
